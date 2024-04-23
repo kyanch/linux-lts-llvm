@@ -1,12 +1,15 @@
 # Maintainer: Andreas Radke <andyrtr@archlinux.org>
 
-pkgbase=linux-lts
+pkgbase=linux-lts-llvm
 pkgver=6.6.28
 pkgrel=1
 pkgdesc='LTS Linux'
 url='https://www.kernel.org'
 arch=(x86_64)
 makedepends=(
+  clang
+  lld
+  bear
   bc
   cpio
   gettext
@@ -60,6 +63,7 @@ b2sums=('688c9b46f36a0ef8dedbfe27681878216e9b11faa05bb3f8a5f257d6536df2a3260c2ec
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
+export LLVM=1
 
 prepare() {
   cd $_srcname
@@ -92,7 +96,7 @@ build() {
 
   make htmldocs &
   local pid_docs=$!
-  make all
+  bear -- make all
   wait "${pid_docs}"
 }
 
